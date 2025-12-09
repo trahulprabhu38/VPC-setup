@@ -1,11 +1,13 @@
 
 # this is settin up the region
 resource "aws_vpc" "prod_vpc" {
-  tags = {
-    Name = "Prod-VPC"
-  }
-  cidr_block = var.VPC_CIDR
+    tags = {
+        Name = "Prod-VPC"
+    }
+    cidr_block = var.VPC_CIDR
 
+    enable_dns_hostnames = true 
+    enable_dns_support = true
 }
 
 
@@ -16,24 +18,26 @@ resource "aws_subnet" "public_subnet" {
     availability_zone = var.az1
     cidr_block = var.Public_Subnet_CIDR
     map_public_ip_on_launch = true
-    
+
     tags = {
         Name = "Default subnet for us-east-1a"
     }
 }
 
 resource "aws_subnet" "private_subnet" {
-
+   
     vpc_id = aws_vpc.prod_vpc.id
     availability_zone = var.az2
     cidr_block = var.Private_Subnet_CIDR
     map_public_ip_on_launch = false
+
     tags = {
         Name = "Default subnet for us-east-1b"
     }
 }
 
 
+# this is to set up the internet gateway
 resource "aws_internet_gateway"  "prod_igw" {
 
     vpc_id = aws_vpc.prod_vpc.id
@@ -43,3 +47,5 @@ resource "aws_internet_gateway"  "prod_igw" {
         Name = "prod-igw"
     }
 }
+
+
